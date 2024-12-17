@@ -35,6 +35,30 @@ app.get("/alldata", (req, res) => {
     }
 });
 
+app.get("/alldatapurches", (req, res) => {
+    try {
+        // Read the contents of Alldata.json file
+        fs.readFile('./purches.json', 'utf8', (err, data) => {
+            if (err) {
+                console.error('Error reading the JSON file:', err);
+                return res.status(500).json({ success: false, message: 'Error reading data file' });
+            }
+
+            try {
+                // Parse the JSON data
+                const products = JSON.parse(data);
+                res.status(200).json({ success: true, products });
+            } catch (parseError) {
+                console.error('Error parsing JSON data:', parseError);
+                res.status(500).json({ success: false, message: 'Error parsing JSON data' });
+            }
+        });
+    } catch (error) {
+        console.error('Unexpected error:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
